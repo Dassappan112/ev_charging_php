@@ -1,0 +1,108 @@
+{% extends 'main.twig' %}
+{% block content %}
+<style>
+    .hero {
+        background-size: cover;
+        color: #fff;
+        text-align: center;
+        padding: 100px 0;
+    }
+
+    .hero h1 {
+        font-size: 4rem;
+    }
+
+    .hero .btn {
+        margin-top: 20px;
+    }
+
+    .card img {
+        height: 200px;
+        object-fit: cover;
+    }
+
+    .footer {
+        color: #fff;
+        padding: 20px;
+        text-align: center;
+    }
+</style>
+
+
+<!-- Hero Section -->
+<header class="hero bg-success">
+    <div class="container ">
+        <h1 class="display-4">Charge-EZ</h1>
+        <p class="lead">Your Easy Solution for Electric Vehicle Charging Slot Scheduling</p>
+        <a href="/find" class="btn btn-light btn-lg">Explore Charging Slots</a>
+    </div>
+</header>
+
+<!-- Overview and Services Section -->
+<section id="services" class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-4">Overview and Services</h2>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card">
+                    <img src="/images/easy.jpg" class="card-img-top" alt="Easy Scheduling">
+                    <div class="card-body">
+                        <h5 class="card-title">Easy Scheduling</h5>
+                        <p class="card-text">Easily schedule your charging slots with just a few clicks. Our intuitive
+                            interface ensures a hassle-free experience.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <img src="/images/booking.jpg" class="card-img-top" alt="Flexible Booking">
+                    <div class="card-body">
+                        <h5 class="card-title">Flexible Booking</h5>
+                        <p class="card-text">Choose from a variety of booking options that fit your schedule. Modify
+                            your reservations as needed with ease.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <img src="/images/updates.jpg" class="card-img-top" alt="Real-Time Updates">
+                    <div class="card-body">
+                        <h5 class="card-title">Real-Time Updates</h5>
+                        <p class="card-text">Stay informed with real-time updates on your booking status and charging
+                            slot availability. Never miss an update.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Why Choose Charge-EZ Section -->
+<section id="why-choose" class="py-5 bg-dark text-white">
+    <div class="container">
+        <h2 class="text-center mb-4">Why Choose Charge-EZ</h2>
+        <div class="row">
+            <div class="col-md-6 p-3">
+                <h3>Convenience</h3>
+                <p>Charge-EZ offers unmatched convenience with our user-friendly platform, enabling you to manage your
+                    charging needs effortlessly.</p>
+            </div>
+            <div class="col-md-6  p-3">
+
+                <h3>Reliability</h3>
+                <p>Count on Charge-EZ for reliable service and consistent availability. Our platform ensures that your
+                    charging experience is smooth and dependable.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer bg-success">
+    <div class="container">
+        <p>&copy; 2024 Charge-EZ. All Rights Reserved.</p>
+        <p>Contact us: <a href="mailto:info@charge-ez.com" class="text-white">info@charge-ez.com</a> | Phone: +123 456
+            7890</p>
+    </div>
+</footer>
+{% endblock content %}

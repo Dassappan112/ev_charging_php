@@ -1,0 +1,111 @@
+{% extends 'main.twig' %}
+{% block content %}
+<div class="container">
+    <h1 class="my-4">Confirm Your Booking</h1>
+    <div class="booking-card card">
+        <div class="card-body">
+            <h5 class="card-title">Booking Details</h5>
+            <form id="order-form">
+                <!-- Date and Time -->
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="date" class="form-label">Date</label>
+                        <input type="datetime-local" class="form-control" id="date" required>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="slot-details" class="form-label">Notes</label>
+                    <textarea id="slot-details" class="form-control" rows="3"></textarea>
+                </div>
+
+                <!-- Price and Duration -->
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="duration" class="form-label">Duration in hours</label>
+                        <input type="number" min="1" max="100" value="1" class="form-control" id="duration"
+                            placeholder="Enter duration" required>
+                    </div>
+                    <div class="col-md-6 pt-3">
+                        <h6>Rate = ₹<span id="rate"></span>/hour</h6>
+                        <h6>total cost = ₹<span id="total"></span></h6>
+                    </div>
+                </div>
+
+                <!-- Book Now Button -->
+                <button type="submit" class="btn btn-success">Book Now</button>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const stationId = "{{ stationId }}"
+        const rateElement = document.getElementById('rate');
+        const totalElement = document.getElementById('total');
+        const durationInput = document.getElementById('duration');
+        const token = localStorage.getItem('access_token');
+        fetch(`{{api_host}}/api/charge-stations/${stationId}/`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                const rate = data.rate;
+                rateElement.textContent = rate;
+                durationInput.addEventListener('input', function () {
+                    const duration = parseFloat(durationInput.value) || 0;
+                    const totalCost = duration * rate;
+                    totalElement.textContent = totalCost.toFixed(2);
+                });
+            })
+            .then(() => {
+                const initialDuration = parseFloat(durationInput.value) || 1;
+                const initialTotalCost = initialDuration * rateElement.textContent;
+                totalElement.textContent = initialTotalCost.toFixed(2);
+            })
+            .catch(error => console.error('Error fetching rate:', error));
+        document.getElementById('order-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const date = document.getElementById('date').value;
+            const duration = document.getElementById('duration').value;
+            const notes = document.getElementById('slot-details').value;
+            const totalCost = document.getElementById('total').textContent;
+            const orderDetails = {
+                charge_station: stationId,
+                datetime: date,
+                quantity: duration,
+                notes: notes,
+            };
+            fetch(`{{api_host}}/api/orders/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify(orderDetails)
+            })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        return response.json().then(data => {
+                            throw new Error(data.message);
+                        });
+                    }
+                })
+                .then(response => {
+                    alert('Booking confirmed!');
+                    window.location.href = `/feedback/${stationId}`;
+                })
+                .catch(error => {
+                    alert('Booking failed: ' + error.message);
+                });
+
+        });
+    });
+</script>
+{% endblock content %}

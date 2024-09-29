@@ -1,0 +1,96 @@
+{% extends 'main.twig' %}
+{% block content %}
+<style>
+    .profile-avatar {
+        width: 120px;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 50%;
+    }
+
+    .profile-card {
+        margin-top: 20px;
+    }
+
+    .booking-card {
+        margin-top: 20px;
+    }
+</style>
+
+<div class="container">
+    <h1 class="my-4">User Profile</h1>
+
+    <!-- Personal Information -->
+    <div class="profile-card card">
+        <div class="card-body">
+            <div class="d-flex align-items-center">
+                <img src="/images/user.png" alt="User Avatar" class="profile-avatar me-3">
+                <div>
+                    <h4 id="name" class="card-title">John Doe</h4>
+                    <p id="email" class="card-text"><strong>Email:</strong> john.doe@example.com</p>
+                    <!-- Add more personal info if needed -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Booking History -->
+    <div class="booking-card card">
+        <div class="card-body">
+            <h5 class="card-title">Booking History</h5>
+            <ul id="booking-list" class="list-group">
+            </ul>
+        </div>
+    </div>
+
+    <!-- Feedback and Logout Buttons -->
+    <div class="mt-4">
+        <!-- <a href="/feedback/" class="btn btn-success me-2">Give Feedback</a> -->
+        <button class="btn btn-danger" onclick="logout()">Logout</button>
+        <script>
+            function logout() {
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('refresh_token');
+            window.location.href = '/login'; // Redirect to login page after logout
+            }
+        </script>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const orderHistoryContainer = document.querySelector('#booking-list');
+        const token = localStorage.getItem('access_token');
+        fetch('{{api_host}}/api/user', {
+            method: 'GET',
+            headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+            if (data && data.name) {
+                document.getElementById('name').textContent = data.name;
+                document.getElementById('email').innerHTML = `<strong>Email:</strong> ${data.username}`;
+            }
+
+            if (data && data.orders) {
+                orderHistoryContainer.innerHTML = ''; // Clear existing content
+                data.orders.forEach(order => {
+                const orderItem = document.createElement('li');
+                orderItem.classList.add('list-group-item');
+                orderItem.innerHTML = `
+                    <h6 class="mb-1">${order.charge_station.name}</h6>
+                    <p class="mb-1"><strong>Date:</strong> ${new Date(order.datetime).toLocaleDateString()} ${new Date(order.datetime).toLocaleTimeString()}</p>
+                    <p class="mb-1"><strong>Rate: </strong>₹${order.charge_station.rate}/- </p>
+                    <p class="mb-1"><strong>Quantity: </strong>${order.quantity}</p>
+                    <p class="mb-1"><strong>Total:</strong>₹${order.quantity * order.charge_station.rate}/- </p>
+                `;
+                orderHistoryContainer.appendChild(orderItem);
+                });
+            }
+            })
+            .catch(error => console.error('Error fetching user data:', error));
+    });
+</script>
+{% endblock %}

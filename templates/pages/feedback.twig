@@ -1,0 +1,79 @@
+{% extends 'main.twig' %}
+{% block content %}
+<div class="container">
+    <h1 class="my-4">We Value Your Feedback</h1>
+
+    <!-- Feedback Form -->
+    <div class="feedback-card card">
+        <div class="card-body">
+            <h5 class="card-title">Share Your Thoughts</h5>
+
+            <form id="feedback-form">
+                <!-- Feedback -->
+                <div class="mb-3">
+                    <textarea id="feedback" class="form-control" rows="5" placeholder="Your Feedback"
+                        required></textarea>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-success">Submit Feedback</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Contact Us Section -->
+    <div class="contact-card card mt-4">
+        <div class="card-body">
+            <h5 class="card-title">Contact Us</h5>
+            <p>If you have any questions or need further assistance, feel free to reach out to us:</p>
+            <p><strong>Email: </strong> <span id="email"></span></p>
+            <p><strong>Phone: </strong><span id="phone"></span></p>
+        </div>
+    </div>
+</div>
+<script>
+    const stationId = "{{ stationId }}"
+    const token = localStorage.getItem('access_token');
+    const emailElement = document.getElementById('email');
+    const phoneElement = document.getElementById('phone');
+    fetch(`{{api_host}}/api/charge-stations/${stationId}/`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+        }
+    })
+        .then(response => response.json())
+        .then(data => {
+            const email = data.email;
+            const phone = data.contact;
+            emailElement.textContent = email;
+            phoneElement.textContent = phone;
+        })
+        .catch(error => console.error('Error fetching data:', error));
+
+    document.getElementById('feedback-form').addEventListener('submit', function (event) {
+        event.preventDefault();
+        const feedback = document.getElementById('feedback').value;
+
+        fetch(`{{api_host}}/api/feedbacks/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ content: feedback, charge_station: stationId })
+        })
+            .then(response => {
+                if (response.status === 201) {
+                    window.location.href = '/';
+                } else {
+                    return response.json().then(data => {
+                        throw new Error(data.message || 'Failed to submit feedback');
+                    });
+                }
+            })
+            .catch(error => console.error('Error submitting feedback:', error));
+    });
+</script>
+{% endblock content %}

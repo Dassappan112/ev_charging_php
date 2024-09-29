@@ -1,0 +1,146 @@
+{% extends 'main.twig' %}
+{% block content %}
+<style>
+  .dashboard-card {
+    margin-top: 20px;
+  }
+
+  .action-buttons .btn {
+    margin-right: 5px;
+  }
+</style>
+
+<div class="container">
+  <h1 class="my-4">Admin Dashboard</h1>
+
+  <!-- Admin User Details -->
+  <div class="dashboard-card card">
+    <div class="card-body">
+      <h5 class="card-title">Admin User Details</h5>
+      <p><strong>Name:</strong> Jane Smith</p>
+      <p><strong>Email:</strong> jane.smith@charge-ez.com</p>
+      <p><strong>Role:</strong> Administrator</p>
+    </div>
+  </div>
+
+  <!-- Existing Stations -->
+  <div class="dashboard-card card">
+    <div class="card-body">
+      <h5 class="card-title">Existing Charging Stations</h5>
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Location</th>
+            <th scope="col">Capacity</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Station A</td>
+            <td>Downtown</td>
+            <td>10</td>
+            <td class="action-buttons">
+              <a href="edit-station.html?id=1" class="btn btn-warning btn-sm">Edit</a>
+              <a href="#" class="btn btn-danger btn-sm">Delete</a>
+            </td>
+          </tr>
+          <tr>
+            <td>Station B</td>
+            <td>Uptown</td>
+            <td>8</td>
+            <td class="action-buttons">
+              <a href="edit-station.html?id=2" class="btn btn-warning btn-sm">Edit</a>
+              <a href="#" class="btn btn-danger btn-sm">Delete</a>
+            </td>
+          </tr>
+          <!-- Add more stations as needed -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Booking Details -->
+  <div class="dashboard-card card">
+    <div class="card-body">
+      <h5 class="card-title">Booking Details</h5>
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">User</th>
+            <th scope="col">Station</th>
+            <th scope="col">Date</th>
+            <th scope="col">Time</th>
+            <th scope="col">Price</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>John Doe</td>
+            <td>Station A</td>
+            <td>2024-08-25</td>
+            <td>15:00</td>
+            <td>$25.00</td>
+            <td class="action-buttons">
+              <a href="edit-booking.html?id=1" class="btn btn-warning btn-sm">Edit</a>
+              <a href="#" class="btn btn-danger btn-sm">Delete</a>
+            </td>
+          </tr>
+          <tr>
+            <td>Emily Davis</td>
+            <td>Station B</td>
+            <td>2024-07-20</td>
+            <td>10:00</td>
+            <td>$30.00</td>
+            <td class="action-buttons">
+              <a href="edit-booking.html?id=2" class="btn btn-warning btn-sm">Edit</a>
+              <a href="#" class="btn btn-danger btn-sm">Delete</a>
+            </td>
+          </tr>
+          <!-- Add more bookings as needed -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- User Details -->
+  <div class="dashboard-card card mb-5">
+    <div class="card-body">
+      <h5 class="card-title">User Details</h5>
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Role</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>John Doe</td>
+            <td>john.doe@example.com</td>
+            <td>User</td>
+            <td class="action-buttons">
+              <a href="edit-user.html?id=1" class="btn btn-warning btn-sm">Edit</a>
+              <a href="#" class="btn btn-danger btn-sm">Delete</a>
+            </td>
+          </tr>
+          <tr>
+            <td>Jane Smith</td>
+            <td>jane.smith@example.com</td>
+            <td>User</td>
+            <td class="action-buttons">
+              <a href="edit-user.html?id=2" class="btn btn-warning btn-sm">Edit</a>
+              <a href="#" class="btn btn-danger btn-sm">Delete</a>
+            </td>
+          </tr>
+          <!-- Add more users as needed -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock content %}
