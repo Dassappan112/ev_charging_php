@@ -33,7 +33,7 @@
                 </div>
 
                 <!-- Book Now Button -->
-                <button type="submit" class="btn btn-success">Book Now</button>
+                <button type="submit" class="btn btn-success">Pay Now</button>
             </form>
         </div>
     </div>
@@ -99,7 +99,7 @@
                 })
                 .then(response => {
                     alert('Booking confirmed!');
-                    window.location.href = `/feedback/${stationId}`;
+                    window.location.href = `/payment/${response.id}/${stationId}`;
                 })
                 .catch(error => {
                     alert('Booking failed: ' + error.message);

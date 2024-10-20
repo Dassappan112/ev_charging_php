@@ -8,13 +8,12 @@ use Twig\Environment;
 $loader = new FilesystemLoader(__DIR__ . '/templates');
 $twig = new Environment($loader);
 
-$api_host = "https:/ev-charging.jerit.in";
-// $api_host = "http://127.0.0.1:8000";
+$api_host = "http://127.0.0.1:8000";
 
 
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
-if ($uri === '/api-admin') {
+if ($uri === '/admin') {
   header('Location: ' . $api_host . '/admin');
 
   exit();
@@ -42,14 +41,16 @@ switch (true) {
   case $uri === '/find':
     echo $twig->render('pages/find.twig', ['api_host' => $api_host]);
     break;
-  case $uri === '/payment':
-    echo $twig->render('pages/payment.twig', ['api_host' => $api_host]);
+  case preg_match('#^/payment/(\d+)/(\d+)$#', $uri, $matches) === 1:
+    $orderId = $matches[1];
+    $stationId = $matches[2];
+    echo $twig->render('pages/payment.twig', ['api_host' => $api_host, 'orderId' => $orderId, 'stationId' => $stationId]);
     break;
   case $uri === '/profile':
     echo $twig->render('pages/profile.twig', ['api_host' => $api_host]);
     break;
-  case $uri === '/admin':
-    echo $twig->render('pages/admin.twig', ['api_host' => $api_host]);
+  case $uri === '/about':
+    echo $twig->render('pages/about.twig', ['api_host' => $api_host]);
     break;
     default:
       http_response_code(404);

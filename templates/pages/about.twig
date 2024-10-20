@@ -1,0 +1,56 @@
+{% extends 'main.twig' %}
+{% block content %}
+<!-- About Section -->
+<section style="height: 100vh; padding-top: 200px; background: linear-gradient(135deg, #28a745, #5cb85c);" id="about"
+  class="text-white">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8 text-center">
+        <h2 class="display-4 mb-4">About Charge-EZ</h2>
+        <p class="lead mb-4">
+          Welcome to Charge-EZ, your ultimate solution for electric vehicle charging slot scheduling.
+          Whether you're a seasoned EV owner or new to electric vehicles, our platform simplifies the process
+          of finding and booking charging stations. We are dedicated to making your charging experience as
+          efficient and convenient as possible, ensuring that you can travel with confidence.
+        </p>
+        <hr class="my-4 bg-light" />
+        <p class="mb-0">
+          Explore our user-friendly interface to effortlessly schedule charging slots, receive real-time updates,
+          and manage your bookings with flexibility. Join us in embracing a sustainable future with ease!
+        </p>
+        <a href="/find" class="btn btn-outline-light mt-4">Book Your Charge Now</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Additional CSS for Modern UI Enhancements -->
+<style>
+  #about h2 {
+    font-weight: 700;
+    letter-spacing: 2px;
+  }
+
+  #about p {
+    font-size: 1.1rem;
+    line-height: 1.7;
+  }
+
+  #about a.btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 50px;
+    font-weight: 600;
+  }
+
+  @media (max-width: 768px) {
+    #about p.lead {
+      font-size: 1rem;
+    }
+
+    #about h2 {
+      font-size: 2.5rem;
+    }
+  }
+</style>
+
+{% endblock content %}

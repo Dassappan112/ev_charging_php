@@ -70,6 +70,25 @@
     const password = document.getElementById('password').value;
     const confirmPassword = document.getElementById('confirm-password').value;
 
+    // Basic password requirements check
+    if (password.length < 8) {
+      alert('Password must be at least 8 characters long!');
+      return;
+    }
+
+    const numberPattern = /\d/;
+    const symbolPattern = /[!@#$%^&*(),.?":{}|<>]/;
+
+    if (!numberPattern.test(password)) {
+      alert('Password must contain at least one number!');
+      return;
+    }
+
+    if (!symbolPattern.test(password)) {
+      alert('Password must contain at least one symbol!');
+      return;
+    }
+    
     // Basic password match check
     if (password !== confirmPassword) {
       alert('Passwords do not match!');

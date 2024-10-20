@@ -1,70 +1,111 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Charge-EZ - Payment</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .payment-card {
-            margin-top: 20px;
-        }
-        .payment-summary {
-            margin-bottom: 20px;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1 class="my-4">Complete Your Payment</h1>
+{% extends 'main.twig' %}
+{% block content %}
+<div class="container">
+    <h1 class="my-4">Complete Your Payment</h1>
 
-        <!-- Payment Summary -->
-        <div class="payment-summary card">
-            <div class="card-body">
-                <h5 class="card-title">Payment Summary</h5>
-                <p><strong>Location:</strong> Downtown</p>
-                <p><strong>Date:</strong> 2024-08-25</p>
-                <p><strong>Time:</strong> 15:00</p>
-                <p><strong>Price:</strong> $25.00</p>
-                <p><strong>Duration:</strong> 2 hours</p>
-            </div>
-        </div>
-
-        <!-- Payment Form -->
-        <div class="payment-card card">
-            <div class="card-body">
-                <h5 class="card-title">Payment Information</h5>
-                
-                <form>
-                    <!-- Card Information -->
-                    <div class="mb-3">
-                        <label for="cardNumber" class="form-label">Card Number</label>
-                        <input type="text" class="form-control" id="cardNumber" placeholder="1234 5678 9012 3456" required>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="expiryDate" class="form-label">Expiry Date</label>
-                            <input type="text" class="form-control" id="expiryDate" placeholder="MM/YY" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="cvv" class="form-label">CVV</label>
-                            <input type="text" class="form-control" id="cvv" placeholder="123" required>
-                        </div>
-                    </div>
-
-                    <!-- Billing Address -->
-                    <div class="mb-3">
-                        <label for="billingAddress" class="form-label">Billing Address</label>
-                        <input type="text" class="form-control" id="billingAddress" placeholder="123 Main St, City, Country" required>
-                    </div>
-
-                    <!-- Pay Now Button -->
-                    <button type="submit" class="btn btn-success">Pay Now</button>
-                </form>
-            </div>
+    <!-- Payment Summary -->
+    <div class="payment-summary card mb-4">
+        <div id="order-summary" class="card-body">
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+    <!-- Payment Form -->
+    <div class="payment-card card">
+        <div class="card-body">
+            <h5 class="card-title">Payment Information</h5>
+
+            <form>
+                <!-- Card Information -->
+                <div class="mb-3">
+                    <label for="cardNumber" class="form-label">Card Number</label>
+                    <input type="text" class="form-control" id="cardNumber" placeholder="1234 5678 9012 3456" required>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="expiryDate" class="form-label">Expiry Date</label>
+                        <input type="text" class="form-control" id="expiryDate" placeholder="MM/YY" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="cvv" class="form-label">CVV</label>
+                        <input type="text" class="form-control" id="cvv" placeholder="123" required>
+                    </div>
+                </div>
+
+                <!-- Pay Now Button -->
+                <button type="submit" class="btn btn-success">Pay Now</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    const orderId = "{{ orderId }}"
+    const stationId = "{{ stationId }}"
+    const token = localStorage.getItem('access_token');
+
+    fetch(`{{api_host}}/api/order-summary/${orderId}/`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+        }
+    })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data)
+            document.querySelector('#order-summary').innerHTML = `
+                <h5 class="card-title">Order Summary</h5>
+                <p><strong>Location:</strong> ${data.charge_station.address}</p>
+                <p><strong>Date:</strong> ${new Date(data.datetime).toLocaleDateString()}</p>
+                <p><strong>Time:</strong> ${new Date(data.datetime).toLocaleTimeString()}</p>
+                <p><strong>Price:</strong> ₹${data.charge_station.rate}</p>
+                <p><strong>Duration:</strong> ${data.quantity} hours</p>
+                <p><strong>Total:</strong> ₹${data.charge_station.rate * data.quantity}</p>
+            `;
+        })
+
+    document.querySelector('form').addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        const paymentData = {
+            card_number: document.querySelector('#cardNumber').value,
+            expiry_date: document.querySelector('#expiryDate').value,
+            cvv: document.querySelector('#cvv').value,
+            orderId: orderId,
+        };
+
+        if (paymentData.card_number.length < 16) {
+            alert('Card number must be at least 16 digits long.');
+            return;
+        }
+
+        console.log(paymentData);
+
+        fetch(`{{api_host}}/api/order/${orderId}/add-payment/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(paymentData),
+        })
+           .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    return response.json().then(data => {
+                        throw new Error(data.message);
+                    });
+                }
+            })
+            .then(response => {
+                alert('Payment confirmed!');
+                window.location.href = `/feedback/${stationId}`;
+            })
+            .catch(error => {
+                alert('Payment failed: ' + error.message);
+            });
+    });
+</script>
+
+{% endblock content %}

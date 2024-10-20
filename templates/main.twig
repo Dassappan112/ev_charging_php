@@ -15,6 +15,8 @@
 <body>
   {% include 'components/navbar.twig' %} {% block content %} {% endblock content %}
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  {% if authenticated_only is not defined or authenticated_only %}
+
   <script>
     function verifyToken() {
       const accessToken = localStorage.getItem('access_token');
@@ -56,5 +58,6 @@
     // Call verifyToken when the page loads or whenever you want to verify the token
     verifyToken();
   </script>
+  {% endif %}
 
 </html>
